@@ -3,30 +3,36 @@ package blogApp.blogX.serviceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import Payloads.PostDto;
 import Payloads.PostResponse;
 import blogApp.blogX.entity.Post;
 import blogApp.blogX.exception.ResourseNotFoundException;
 import blogApp.blogX.repository.PostRepository;
+import jakarta.validation.Valid;
 @Service
 public class PostServiceImpl implements PostService {
 
 	private PostRepository postRepository;
+	private  ModelMapper modelMapper;
 	
-	public PostServiceImpl(PostRepository postRepository) {
+	public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
 		super();
 		this.postRepository = postRepository;
+		this.modelMapper=modelMapper;
 	}
 
 	@Override
-	public PostDto createPost(PostDto postDto) {
+	public PostDto createPost( PostDto  postDto) {
 		// TODO Auto-generated method stub
 		// converting DTO to entity, createpost send postdto type, repo accepts post type, so postdto is converted
 		//to post, saved to repo, then newpost is converted to Dto type ,responseentity takes body , statuscode.
@@ -64,21 +70,22 @@ public class PostServiceImpl implements PostService {
 	//convert dto to entity
 	private Post mapToEntity(PostDto postDto)
 	{
-		Post post=new Post();
-		post.setTitle(postDto.getTitle());
-		post.setContent(postDto.getContent());
-		post.setDescription(postDto.getDescription());
-		return post;
+		Post post=modelMapper.map(postDto, Post.class);
+//		Post post=new Post();
+//		post.setTitle(postDto.getTitle());
+//		post.setContent(postDto.getContent());
+//		post.setDescription(postDto.getDescription());
+	return post;
 	}
 	//convert entity to dto
 	private PostDto mapToDTO(Post post)
 	{
-				PostDto postDto=new PostDto();
-				postDto.setId(post.getId());
-				postDto.setContent(post.getContent());
-				postDto.setDescription(post.getDescription());
-				postDto.setTitle(post.getTitle());
-				
+//				PostDto postDto=new PostDto();
+//				postDto.setId(post.getId());
+//				postDto.setContent(post.getContent());
+//				postDto.setDescription(post.getDescription());
+//				postDto.setTitle(post.getTitle());
+			PostDto postDto=modelMapper.map(post, PostDto.class);
 				return postDto;
 				
 	}
